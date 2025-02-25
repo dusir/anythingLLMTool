@@ -13,8 +13,11 @@ python upload.py  --key AZ9FPRR-0ZFM3FT-NXXQJZ8-21M4GSB --input /Users/bob/Docum
 
 ```
 对应目录举例：
-$ ls  ../data/
-103：大模型应用开发极简入门：基于 GPT-4 和 ChatGPT_2024.pdf
-104：一本书读懂AIGC：ChatGPT、AI绘画、智能文明与生产力变革_2023.pdf
-从零开始大模型开发与微调基于PyTorch与ChatGLM.pdf
-大规模语言模型：从理论到实践.pdf
+$ ls  ../data/  
+
+103：大模型应用开发极简入门：基于 GPT-4 和 ChatGPT_2024.pdf  
+104：一本书读懂AIGC：ChatGPT、AI绘画、智能文明与生产力变革_2023.pdf  
+从零开始大模型开发与微调基于PyTorch与ChatGLM.pdf  
+大规模语言模型：从理论到实践.pdf  
+
+我的目录里有这几个pdf文件。

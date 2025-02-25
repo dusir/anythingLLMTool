@@ -1,7 +1,8 @@
 # coding:utf-8
 import os
-import subprocess
 import argparse
+from urllib.parse import quote_plus
+import requests
 
 # 创建命令行参数解析器
 parser = argparse.ArgumentParser(description='上传指定目录下的所有文件到 anythingLLM知识库工具')
@@ -26,25 +27,32 @@ headers = {
 for root, dirs, files in os.walk(args.input):
     for file in files:
         file_path = os.path.join(root, file)
-        # 构建 curl 命令
-        curl_command = [
-            'curl',
-            '-X', 'POST',
-            url
-        ]
-        # 添加请求头
-        for key, value in headers.items():
-            curl_command.extend(['-H', f'{key}: {value}'])
-        # 添加表单字段
-        curl_command.extend([
-            '-F', f"name={os.path.basename(file_path)}",
-            '-F', f"file=@/{file_path}"
-        ])
+        # 对文件名进行 URL 编码
+        encoded_file_name = quote_plus(os.path.basename(file_path))
+
+        encoded_file_name = os.path.basename(file_path).encode("GBK").decode("GBK")
+
         try:
-            # 执行 curl 命令
-            result = subprocess.run(curl_command, capture_output=True, text=True, check=True)
-            print(f"成功上传文件: {file_path}")
-            print("服务器响应:", result.stdout)
-        except subprocess.CalledProcessError as e:
+            # 打开文件并准备上传
+            with open(file_path, 'rb') as f:
+                # 构建表单数据
+                data = {
+                    'name': encoded_file_name.encode("utf-8")
+                }
+                files = {
+                    'file': (os.path.basename(file_path), f)
+                }
+
+                # 发送 POST 请求
+                response = requests.post(url, headers=headers, data=data, files=files)
+
+                # 检查响应状态码
+                if response.status_code == 200:
+                    print(f"成功上传文件: {file_path}")
+                    print("服务器响应:", response.text)
+                else:
+                    print(f"上传文件 {file_path} 失败:")
+                    print("错误信息:", response.text)
+        except Exception as e:
             print(f"上传文件 {file_path} 失败:")
-            print("错误信息:", e.stderr)
+            print("错误信息:", str(e))
